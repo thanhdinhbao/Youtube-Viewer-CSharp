@@ -37,10 +37,11 @@ namespace Comment
         public void Api()
         {
             var client = new RestClient("https://proxy-orbit1.p.rapidapi.com/v1/");
-            var request = new RestRequest(Method.GET);
+            var request = new RestRequest();
+            request.Method = Method.Get;
             request.AddHeader("x-rapidapi-host", "proxy-orbit1.p.rapidapi.com");
             request.AddHeader("x-rapidapi-key", "d346afd0d5mshafb495a22ac67ecp1cd187jsn33c84737bc62");
-            IRestResponse response = client.Execute(request);
+            RestResponse response = client.Execute(request);
         }
         private string UserAgent()
         {
