@@ -40,12 +40,13 @@ namespace Comment
         //Del Mail
         private void Xoa_Mail()
         {
+            string path = AppDomain.CurrentDomain.BaseDirectory;
             foreach (DataGridViewRow row in dataGridView1.SelectedRows)
             {
                 string ID = row.Cells[0].Value.ToString();
                 try
                 {
-                    OleDbConnection conn = new OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=E:\\Comment\\Comment\\MailTool.mdb;Persist Security Info=True;Jet OLEDB:Database Password=1");
+                    OleDbConnection conn = new OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source="+path+"MailTool.mdb;Persist Security Info=True;Jet OLEDB:Database Password=1");
                     string query = "DELETE FROM Mail WHERE [ID]= @ID";
                     OleDbCommand cmd = new OleDbCommand();
                     conn.Open();
@@ -78,15 +79,13 @@ namespace Comment
                 case DialogResult.No:
                     break;
             }
-
-
         }
 
         //Add video
         private void btnLogin_Click(object sender, EventArgs e)
         {
             CommentVideo f1 = new CommentVideo();
-            f1.txtMail1.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            //f1.txtMail1.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
             f1.txtPass1.Text = this.dataGridView1.CurrentRow.Cells[2].Value.ToString();
             f1.txtRecovery1.Text = this.dataGridView1.CurrentRow.Cells[3].Value.ToString();
             f1.ShowDialog();
@@ -170,7 +169,7 @@ namespace Comment
             check1.IsBackground = true;
             check1.Start();
         }
-
+        //Sửa Email
         private void btnEditMail_Click(object sender, EventArgs e)
         {
             OleDbConnection con = new OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=E:\\Comment\\Comment\\MailTool.mdb;Persist Security Info=True;Jet OLEDB:Database Password=1");
@@ -192,6 +191,7 @@ namespace Comment
             //dataGridView1.ReadOnly = true;
             con.Close();
         }
+        //Tăng đề xuất hình thu nhỏ
         private void btnDeXuat_Click(object sender, EventArgs e)
         {
             TangDeXuat t2 = new TangDeXuat();
@@ -209,7 +209,7 @@ namespace Comment
                 e.Value = new String('\u002a', e.Value.ToString().Length);
             }
         }
-
+        //Tìm kiếm video 
         private void btnSearchVideo_Click(object sender, EventArgs e)
         {
             SearchVideo search = new SearchVideo();

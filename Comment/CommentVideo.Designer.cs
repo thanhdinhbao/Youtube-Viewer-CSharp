@@ -56,6 +56,8 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.numThread = new System.Windows.Forms.NumericUpDown();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtTotalSub = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.txtView = new System.Windows.Forms.TextBox();
@@ -68,8 +70,6 @@
             this.pbRun = new System.Windows.Forms.ToolStripProgressBar();
             this.timeView = new System.Windows.Forms.ToolStripStatusLabel();
             this.tmRun = new System.Windows.Forms.Timer(this.components);
-            this.label13 = new System.Windows.Forms.Label();
-            this.txtTotalSub = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMinTime)).BeginInit();
@@ -366,6 +366,25 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Thông tin";
             // 
+            // txtTotalSub
+            // 
+            this.txtTotalSub.ForeColor = System.Drawing.Color.Brown;
+            this.txtTotalSub.Location = new System.Drawing.Point(88, 94);
+            this.txtTotalSub.Name = "txtTotalSub";
+            this.txtTotalSub.ReadOnly = true;
+            this.txtTotalSub.Size = new System.Drawing.Size(49, 20);
+            this.txtTotalSub.TabIndex = 71;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.label13.Location = new System.Drawing.Point(46, 98);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(29, 13);
+            this.label13.TabIndex = 71;
+            this.label13.Text = "Sub:";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -469,25 +488,6 @@
             // 
             this.tmRun.Interval = 1000;
             this.tmRun.Tick += new System.EventHandler(this.tmRun_Tick);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label13.Location = new System.Drawing.Point(46, 98);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(29, 13);
-            this.label13.TabIndex = 71;
-            this.label13.Text = "Sub:";
-            // 
-            // txtTotalSub
-            // 
-            this.txtTotalSub.ForeColor = System.Drawing.Color.Brown;
-            this.txtTotalSub.Location = new System.Drawing.Point(88, 94);
-            this.txtTotalSub.Name = "txtTotalSub";
-            this.txtTotalSub.ReadOnly = true;
-            this.txtTotalSub.Size = new System.Drawing.Size(49, 20);
-            this.txtTotalSub.TabIndex = 71;
             // 
             // CommentVideo
             // 

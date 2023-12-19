@@ -3,12 +3,15 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using System.Xml;
+using static Comment.CommentVideo;
 
 namespace Comment
 {
@@ -21,6 +24,88 @@ namespace Comment
             Control.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
         }
+
+        #region Class
+        //Class Title
+        public class RootTitle
+        {
+            public List<ItemTitle> items { get; set; }
+        }
+
+        public class ItemTitle
+        {
+            public string id { get; set; }
+            public SnippetTitle snippet { get; set; }
+
+        }
+
+        public class SnippetTitle
+        {
+            public string channelId { get; set; }
+            public string channelTitle { get; set; }
+
+        }
+        //Class View Count
+        public class ItemViewCount
+        {
+            public StatisticsViewCount statistics { get; set; }
+        }
+
+
+        public class RootViewCount
+        {
+            public List<ItemViewCount> items { get; set; }
+        }
+
+        public class StatisticsViewCount
+        {
+            public string viewCount { get; set; }
+            public string likeCount { get; set; }
+            public string favoriteCount { get; set; }
+            public string commentCount { get; set; }
+        }
+        //Class Sub Count
+
+        public class ItemSubCount
+        {
+            public StatisticsSubCount statistics { get; set; }
+        }
+
+        public class RootSubCount
+        {
+            public List<ItemSubCount> items { get; set; }
+        }
+
+        public class StatisticsSubCount
+        {
+            public string subscriberCount { get; set; }
+
+        }
+        //Class 
+
+        public class ContentDetailsDuration
+        {
+            public string duration { get; set; }
+
+        }
+
+        public class ItemDuration
+        {
+            public ContentDetailsDuration contentDetails { get; set; }
+        }
+
+
+
+        public class RootDuration
+        {
+            public List<ItemDuration> items { get; set; }
+        }
+
+
+
+        #endregion
+
+
         public string ApiProxy()
         {
             string proxyurl = "https://api.getproxylist.com/proxy?&protocol[]=socks5&country[]=US";
@@ -68,10 +153,9 @@ namespace Comment
         }
         public void StartCmtChrome()
         {
-
             try
             {
-                string UA = this.GetUA();
+                string UA = GetUA();
                 var driverService = ChromeDriverService.CreateDefaultService();
                 driverService.HideCommandPromptWindow = true;
                 ChromeOptions options = new ChromeOptions();
@@ -115,7 +199,7 @@ namespace Comment
                 driver.Navigate().GoToUrl("https://accounts.google.com/o/oauth2/auth?client_id=717762328687-iludtf96g1hinl76e4lc1b9a82g457nn.apps.googleusercontent.com&scope=profile+email&redirect_uri=https%3a%2f%2fstackauth.com%2fauth%2foauth2%2fgoogle&state=%7b%22sid%22%3a1%2c%22st%22%3a%2259%3a3%3aBBC%2c16%3a76f381a5db260ab5%2c10%3a1597585850%2c16%3a0de8c2b94c0a8704%2c37d8ad8e3a517a80798df4b0a8a831482af29d563ee953ffe7bb75a40e5394b0%22%2c%22cdl%22%3anull%2c%22cid%22%3a%22717762328687-iludtf96g1hinl76e4lc1b9a82g457nn.apps.googleusercontent.com%22%2c%22k%22%3a%22Google%22%2c%22ses%22%3a%2205707ef6697b439795eb788e54653265%22%7d&response_type=code");
                 IWebElement query = driver.FindElement(By.CssSelector("input[type='email']"));
                 lblStatus.Text = "Đang nhập mail";
-                query.SendKeys(txtMail1.Text.Trim() + OpenQA.Selenium.Keys.Enter);
+                query.SendKeys("dinhthanh.ytb1@gmail.com" + OpenQA.Selenium.Keys.Enter);
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
                 query = driver.FindElement(By.CssSelector("input[name='password']"));
                 lblStatus.Text = "Đang nhập mật khẩu";
@@ -205,6 +289,7 @@ namespace Comment
                     }
 
                 }
+                //Comment
                 IWebElement body = driver.FindElement(By.XPath("/html/body"));
                 body.SendKeys(OpenQA.Selenium.Keys.End);
                 Thread.Sleep(2000);
@@ -263,64 +348,149 @@ namespace Comment
 
         }
 
-        private void btnCheckVideo_Click(object sender, EventArgs e)
+        async void GetTitleVideo(string id, string key)
         {
             try
             {
-                string titleurl = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + txtLink.Text + "&key=AIzaSyBX-OT219m9Nrs-JV3rgWxVIYsNzD8-TP4";
-                HttpWebRequest titlerequest = (HttpWebRequest)WebRequest.Create(titleurl);
-                HttpWebResponse titleresponse = (HttpWebResponse)titlerequest.GetResponse();
-                Stream titlestream = titleresponse.GetResponseStream();
-                StreamReader titlereader = new StreamReader(titlestream);
-                string titlejson = titlereader.ReadToEnd();
-                Newtonsoft.Json.Linq.JObject jObject = Newtonsoft.Json.Linq.JObject.Parse(titlejson);
-                string ChannelName = (string)jObject["items"][0]["snippet"]["channelTitle"];
-                string ChannelID = (string)jObject["items"][0]["snippet"]["channelId"];
+                var options = new RestClientOptions()
+                {
+                    MaxTimeout = -1,
+                };
+                var client = new RestClient(options);
+                var request = new RestRequest("https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id="+id+"&key="+ key);
+                request.Method = Method.Get;
+                RestResponse response = await client.ExecuteAsync(request);
+                RootTitle parsed_json = JsonConvert.DeserializeObject<RootTitle>(response.Content);
+                string ChannelName = parsed_json.items[0].snippet.channelTitle;
+                string ChannelID = parsed_json.items[0].snippet.channelId;
 
-                string titleurl1 = "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + txtLink.Text + "&key=AIzaSyBX-OT219m9Nrs-JV3rgWxVIYsNzD8-TP4";
-                HttpWebRequest titlerequest1 = (HttpWebRequest)WebRequest.Create(titleurl1);
-                HttpWebResponse titleresponse1 = (HttpWebResponse)titlerequest1.GetResponse();
-                Stream titlestream1 = titleresponse1.GetResponseStream();
-                StreamReader titlereader1 = new StreamReader(titlestream1);
-                string titlejson1 = titlereader1.ReadToEnd();
-                Newtonsoft.Json.Linq.JObject jObject1 = Newtonsoft.Json.Linq.JObject.Parse(titlejson1);
-                string ViewCount = (string)jObject1["items"][0]["statistics"]["viewCount"];
-
-                string suburl = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=" + ChannelID + "&key=AIzaSyBX-OT219m9Nrs-JV3rgWxVIYsNzD8-TP4";
-                HttpWebRequest subrequest = (HttpWebRequest)WebRequest.Create(suburl);
-                HttpWebResponse subresponse = (HttpWebResponse)subrequest.GetResponse();
-                Stream substream = subresponse.GetResponseStream();
-                StreamReader subreader = new StreamReader(substream);
-                string subjson = subreader.ReadToEnd();
-                Newtonsoft.Json.Linq.JObject sub = Newtonsoft.Json.Linq.JObject.Parse(subjson);
-                string totalsub = (string)sub["items"][0]["statistics"]["subscriberCount"];
-
-                //Lay thoi gian video
-                string timeurl = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=" + txtLink.Text + "&key=AIzaSyBX-OT219m9Nrs-JV3rgWxVIYsNzD8-TP4";
-                HttpWebRequest timerequest = (HttpWebRequest)WebRequest.Create(timeurl);
-                HttpWebResponse timeresponse = (HttpWebResponse)timerequest.GetResponse();
-                Stream timestream = timeresponse.GetResponseStream();
-                StreamReader timereader = new StreamReader(timestream);
-                string timejson = timereader.ReadToEnd();
-                Newtonsoft.Json.Linq.JObject videotime = Newtonsoft.Json.Linq.JObject.Parse(timejson);
-                string time = (string)videotime["items"][0]["contentDetails"]["duration"];
-                TimeSpan ts = XmlConvert.ToTimeSpan(time);
-                double seconds = ts.TotalSeconds;
-
-
-                if (ChannelName.Length > 0 && ViewCount.Length > 0 && seconds > 0)
+                if(ChannelName.Length > 0)
                 {
                     lblChannelName.Text = ChannelName;
-                    txtView.Text = ViewCount;
-                    txtTime.Text = seconds.ToString();
-                    txtTotalSub.Text = totalsub;
                 }
                 else
                 {
-                    MessageBox.Show("Lỗi lấy tên video!", "Lỗi");
+                    MessageBox.Show("Lỗi API!");
+                }
+                
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Không thể lấy tiêu đề video!");
+            }
+        }
+
+        async void GetViewCount(string id, string key)
+        {
+            try
+            {
+                var options = new RestClientOptions()
+                {
+                    MaxTimeout = -1,
+                };
+                var client = new RestClient(options);
+                var request = new RestRequest("https://www.googleapis.com/youtube/v3/videos?part=statistics&id="+id+"&key="+key);
+                request.Method = Method.Get;
+                RestResponse response = await client.ExecuteAsync(request);
+                RootViewCount parsed_json = JsonConvert.DeserializeObject<RootViewCount>(response.Content);
+                string ViewCount = parsed_json.items[0].statistics.viewCount;
+
+                if (ViewCount.Length > 0)
+                {
+                    txtView.Text = ViewCount;
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi API!");
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Không thể lấy số view!");
+            }
+        }
+
+        async void GetSubCount(string id, string key)
+        {
+            try
+            {
+                var options = new RestClientOptions()
+                {
+                    MaxTimeout = -1,
+                };
+                var client = new RestClient(options);
+                var request = new RestRequest("https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=" + id + "&key=" + key);
+                request.Method = Method.Get;
+                RestResponse response = await client.ExecuteAsync(request);
+                RootTitle parsed_json = JsonConvert.DeserializeObject<RootTitle>(response.Content);
+                
+                string ChannelID = parsed_json.items[0].snippet.channelId;
+
+
+                var options1 = new RestClientOptions()
+                {
+                    MaxTimeout = -1,
+                };
+                var client1 = new RestClient(options);
+                var request1 = new RestRequest("https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+ ChannelID +"&key="+key);
+                request1.Method = Method.Get;
+                RestResponse response1 = await client.ExecuteAsync(request1);
+                RootSubCount parsed_json1 = JsonConvert.DeserializeObject<RootSubCount>(response1.Content);
+                string sub_count = parsed_json1.items[0].statistics.subscriberCount;
+
+                if(sub_count.Length >0)
+                {
+                    txtTotalSub.Text = sub_count;
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi API!");
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Không thể lấy số sub!");
+            }
+        }
+
+        async void GetVideoDuration(string id, string key)
+        {
+            try
+            {
+                var options = new RestClientOptions()
+                {
+                    MaxTimeout = -1,
+                };
+                var client = new RestClient(options);
+                var request = new RestRequest("https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id="+id+"&key="+key);
+                request.Method = Method.Get;
+                RestResponse response = await client.ExecuteAsync(request);
+                RootDuration parsed_json = JsonConvert.DeserializeObject<RootDuration>(response.Content);
+                string time = parsed_json.items[0].contentDetails.duration;
+                TimeSpan ts = XmlConvert.ToTimeSpan(time);
+                double seconds = ts.TotalSeconds;
+
+                if(seconds > 0)
+                {
+                    txtTime.Text = seconds.ToString();
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi API!");
                 }
 
-                var request = WebRequest.Create("https://img.youtube.com/vi/" + txtLink.Text + "/mqdefault.jpg");
+            }
+            catch(Exception)
+            {
+                MessageBox.Show("Không thể lấy thời lượng video");
+            }
+        }
+
+        void GetThumbnail(string id)
+        {
+            try
+            {
+                var request = WebRequest.Create("https://img.youtube.com/vi/" +id + "/mqdefault.jpg");
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -331,8 +501,21 @@ namespace Comment
             }
             catch (Exception)
             {
-                MessageBox.Show("Không thể lấy thông tin video!");
+                MessageBox.Show("Không thể lấy thumbnail video!");
             }
+        }
+        
+
+        private void btnCheckVideo_Click(object sender, EventArgs e)
+        {
+            string id = txtLink.Text;
+            string key = "AIzaSyDInVCVdX1AH5T_J8zprDTCfSdrnu_bSUo";
+
+            GetTitleVideo(id,key);
+            GetViewCount(id, key);
+            GetSubCount(id, key);
+            GetVideoDuration(id, key);
+            GetThumbnail(id);
         }
 
         private void AddVideo_Load(object sender, EventArgs e)
