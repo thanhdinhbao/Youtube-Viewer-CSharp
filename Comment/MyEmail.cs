@@ -95,7 +95,7 @@ namespace Comment
         {
             foreach (DataGridViewRow row in dataGridView1.SelectedRows)
             {
-                string mail = row.Cells[1].Value.ToString();
+                string mail = "dinhbaothanh2004@gmail.com";
                 string pass = row.Cells[2].Value.ToString();
                 string recovery = row.Cells[3].Value.ToString();
                 try
@@ -195,7 +195,7 @@ namespace Comment
         private void btnDeXuat_Click(object sender, EventArgs e)
         {
             TangDeXuat t2 = new TangDeXuat();
-            t2.txtMail.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            //t2.txtMail.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
             t2.txtPass.Text = this.dataGridView1.CurrentRow.Cells[2].Value.ToString();
             t2.txtRecovery.Text = this.dataGridView1.CurrentRow.Cells[3].Value.ToString();
             t2.ShowDialog();
@@ -213,7 +213,7 @@ namespace Comment
         private void btnSearchVideo_Click(object sender, EventArgs e)
         {
             SearchVideo search = new SearchVideo();
-            search.txtMail.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            //search.txtMail.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
             search.txtPass.Text = this.dataGridView1.CurrentRow.Cells[2].Value.ToString();
             search.txtRecovery.Text = this.dataGridView1.CurrentRow.Cells[3].Value.ToString();
             search.ShowDialog();
